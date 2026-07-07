@@ -1,0 +1,25 @@
+{
+  "name": "Atlantic North Electrical — Batting Order",
+  "short_name": "ANE Batting",
+  "description": "Field dispatch decision tool for matching the right technician to the right call.",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#001E60",
+  "theme_color": "#001E60",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
