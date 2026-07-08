@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
-<title>Atlantic North Electrical - Batting Order</title>
+<title>Atlantic North Electrical Batting Order</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;900&family=Barlow:wght@400;500;600;700;800;900&display=swap');
 
@@ -372,6 +372,33 @@
   }
   .modal-head h2 { margin: 0; font-size: 30px; }
   .modal-body { display: grid; gap: 18px; }
+  .scorecard-grid { display: grid; gap: 14px; }
+  .scorecard-card {
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 16px 18px;
+    background: #f7f9fa;
+  }
+  .scorecard-card h3 {
+    margin: 0 0 10px;
+    font-size: 20px;
+    font-weight: 800;
+  }
+  .scorecard-card ul {
+    margin: 0;
+    padding-left: 20px;
+    color: var(--steel);
+    font-size: 16px;
+    line-height: 1.45;
+    font-weight: 600;
+  }
+  .scorecard-note {
+    margin: 0;
+    color: var(--steel);
+    font-size: 17px;
+    line-height: 1.35;
+    font-weight: 600;
+  }
   .field { display: grid; gap: 8px; }
   .field label { color: var(--steel); font-weight: 900; text-transform: uppercase; letter-spacing: 1.5px; }
   .field input, .field select {
@@ -457,15 +484,15 @@
   <main class="app">
     <section class="hero">
       <div class="logo-wrap">
-        <img class="logo" src="atlantic-north-electrical-logo.png" alt="Atlantic North Electrical logo">
+        <img class="logo" src="assets/atlantic-north-electrical-logo.png" alt="Atlantic North Electrical logo">
       </div>
       <div>
         <p class="eyebrow">Atlantic North - Batting Order</p>
-        <h1>Electrical Performance Batting Order</h1>
-        <p class="subhead">Turn electrical performance into a clear, coachable lineup.</p>
+        <h1>Atlantic North Electrical Batting Order</h1>
+        <p class="subhead">Rank electrical technicians by service and maintenance scorecard performance.</p>
       </div>
       <div class="hero-actions">
-        <button class="btn" type="button" id="copy-team">Copy Team Link</button>
+        <button class="btn" type="button" id="copy-team">Copy Board Setup</button>
         <button class="btn" type="button" id="import-trigger">Import Tech List</button>
         <button class="btn primary-action" type="button" id="add-trigger">+ Add Technician</button>
         <input class="hidden-input" id="import-file" type="file" accept=".json,.csv">
@@ -496,11 +523,11 @@
       <header class="panel-head">
         <div>
           <p class="panel-title" id="leaderboard-title">Service Leaderboard</p>
-          <p class="panel-note">Technicians automatically rank by weighted score.</p>
+          <p class="panel-note">Technicians rank automatically by weighted score.</p>
         </div>
         <div class="panel-actions">
-          <button class="small-btn outline" type="button" id="weights-trigger">Targets &amp; Weights</button>
-          <button class="small-btn" type="button" id="reset-demo">Reset Demo</button>
+          <button class="small-btn outline" type="button" id="weights-trigger">Scoring Guide</button>
+          <button class="small-btn" type="button" id="reset-demo">Reset List</button>
         </div>
       </header>
       <div class="leaderboard" id="leaderboard"></div>
@@ -540,18 +567,32 @@
   <div class="modal-backdrop" id="weights-modal">
     <div class="modal">
       <header class="modal-head">
-        <h2>Targets &amp; Weights</h2>
+        <h2>Electrical Scoring Guide</h2>
         <button class="small-btn" type="button" data-close>Close</button>
       </header>
       <div class="modal-body">
-        <p class="panel-note">Service and maintenance scorecards are ranked against the current weighted score. Import a JSON or CSV file with name, role, and score columns to replace this starter list.</p>
-        <div class="field">
-          <label>Service targets</label>
-          <input value="Membership, conversion rate, average sale, reviews, options" readonly>
-        </div>
-        <div class="field">
-          <label>Maintenance targets</label>
-          <input value="Membership, conversion rate, average sale, reviews/callbacks, options" readonly>
+        <p class="scorecard-note">Use the weighted score as the simple, coachable ranking for who should lead each type of electrical call.</p>
+        <div class="scorecard-grid">
+          <section class="scorecard-card">
+            <h3>Service Batting Order</h3>
+            <ul>
+              <li>Membership conversion</li>
+              <li>Opportunity conversion rate</li>
+              <li>Average sale dollars</li>
+              <li>Five-star review activity</li>
+              <li>Options presented per opportunity</li>
+            </ul>
+          </section>
+          <section class="scorecard-card">
+            <h3>Maintenance Batting Order</h3>
+            <ul>
+              <li>Membership conversion</li>
+              <li>Conversion rate on replacement opportunities</li>
+              <li>Average sale dollars</li>
+              <li>Reviews and callback quality</li>
+              <li>Options presented per opportunity</li>
+            </ul>
+          </section>
         </div>
       </div>
       <footer class="modal-foot">
@@ -561,7 +602,7 @@
   </div>
 
 <script>
-const STORAGE_KEY = "ane_armor_style_batting_order_v1";
+const STORAGE_KEY = "ane_trade_board_batting_order_v1";
 const defaultTechs = [
   { name: "TJ", role: "service", score: 82 },
   { name: "Nate", role: "service", score: 73 },
@@ -640,7 +681,7 @@ function rowTemplate(tech, index) {
       <div class="rank">${rank}</div>
       <div>
         <p class="tech-name">${escapeHtml(tech.name)}</p>
-        <p class="tech-meta">${role} · ${tech.score}% to perfect score</p>
+        <p class="tech-meta">${role} · ${tech.score}% weighted score</p>
       </div>
       <div class="meter" aria-label="${tech.score}% weighted score"><div class="meter-fill" style="width:${tech.score}%"></div></div>
       <div class="score"><strong>${tech.score}%</strong><span>Weighted Score</span></div>
@@ -743,7 +784,7 @@ document.getElementById("copy-team").addEventListener("click", async event => {
   try {
     await navigator.clipboard.writeText(payload);
     const old = event.currentTarget.textContent;
-    event.currentTarget.textContent = "Team Copied";
+    event.currentTarget.textContent = "Setup Copied";
     setTimeout(() => event.currentTarget.textContent = old, 1800);
   } catch (error) {
     alert("Could not copy the team list in this browser.");
