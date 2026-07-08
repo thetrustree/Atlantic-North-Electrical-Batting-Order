@@ -1,0 +1,1047 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#151515">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Electrical Batting Order">
+  <link rel="icon" href="assets/atlantic-north-electrical-logo.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/atlantic-north-electrical-logo.png">
+  <link rel="manifest" id="appManifest">
+  <title>Electrical Performance Batting Order</title>
+  <style>
+    :root {
+      --navy: #151515;
+      --navy-2: #2a2a2a;
+      --orange: #f05a18;
+      --yellow: #ff8a2a;
+      --aqua: #fff1e8;
+      --aqua-2: #ffb07a;
+      --cream: #f8f4ef;
+      --ink: #1c1c1c;
+      --muted: #6f6a66;
+      --line: #d9cec5;
+      --green: #f05a18;
+      --red: #b8331b;
+      --white: #fff;
+      --shadow: 0 14px 34px rgba(3, 20, 33, .14);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12% 0%, rgba(240, 90, 24, .22), transparent 30rem),
+        radial-gradient(circle at 84% 8%, rgba(35, 35, 35, .12), transparent 22rem),
+        linear-gradient(180deg, #fff8f3 0, #f3eee9 42%, #e9e1db 100%);
+      font: 16px/1.45 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+
+    .app {
+      width: min(1180px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 22px 0 56px;
+    }
+
+    .hero {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      align-items: center;
+      padding: 24px 28px;
+      color: white;
+      border-radius: 24px;
+      background:
+        linear-gradient(110deg, rgba(240,90,24,.26), transparent 36%),
+        linear-gradient(135deg, #060606, var(--navy-2));
+      box-shadow: var(--shadow);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      min-width: 0;
+    }
+
+    .brand-logo {
+      width: 112px;
+      height: 112px;
+      flex: 0 0 auto;
+      object-fit: contain;
+      filter: drop-shadow(0 8px 12px rgba(0, 0, 0, .32));
+    }
+
+    .eyebrow {
+      margin: 0 0 4px;
+      color: #ff9b53;
+      font-size: .78rem;
+      font-weight: 850;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.75rem, 4vw, 3rem);
+      line-height: 1.05;
+      letter-spacing: -.045em;
+    }
+
+    .hero p:last-child {
+      margin: 9px 0 0;
+      color: #f4e8df;
+    }
+
+    .hero-actions { display: flex; gap: 9px; flex-wrap: wrap; justify-content: flex-end; }
+
+    .btn {
+      border: 1px solid transparent;
+      border-radius: 12px;
+      padding: 10px 14px;
+      color: var(--navy);
+      background: white;
+      font-weight: 800;
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(8, 27, 44, .16); }
+    .btn.primary { background: var(--orange); color: white; }
+    #addTech {
+      color: #fff;
+      background: #f05a18;
+      border-color: #ff9b53;
+    }
+    #addTech:hover { background: #ff6f2a; }
+    .btn.soft { background: var(--aqua); color: var(--navy); border-color: var(--aqua-2); }
+    .btn.ghost { background: transparent; color: white; border-color: rgba(255,255,255,.35); }
+    .btn.danger { color: var(--red); border-color: #ecc5bf; background: #fff8f7; }
+    .btn.small { padding: 7px 10px; font-size: .86rem; border-radius: 9px; }
+
+    .switcher {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin: 18px 0;
+      padding: 6px;
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      background: rgba(255,255,255,.78);
+      box-shadow: 0 7px 20px rgba(16, 42, 67, .06);
+    }
+
+    .switcher button {
+      padding: 13px 16px;
+      border: 0;
+      border-radius: 12px;
+      color: var(--muted);
+      background: transparent;
+      font-weight: 850;
+    }
+
+    .switcher button[aria-selected="true"] {
+      color: white;
+      background: var(--navy);
+      box-shadow: 0 5px 12px rgba(16, 42, 67, .2);
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .summary-card, .panel {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255,255,255,.92);
+      box-shadow: 0 7px 20px rgba(16, 42, 67, .06);
+    }
+
+    .summary-card { padding: 17px 19px; }
+    .summary-card .label {
+      color: var(--muted);
+      font-size: .74rem;
+      font-weight: 850;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .summary-card .value {
+      display: block;
+      margin-top: 4px;
+      color: var(--navy);
+      font-size: 1.45rem;
+      font-weight: 900;
+      letter-spacing: -.025em;
+    }
+
+    .warning {
+      margin: 0 0 18px;
+      padding: 13px 16px;
+      border: 1px solid #eed88e;
+      border-radius: 14px;
+      color: #6a4a00;
+      background: #fff8d9;
+      font-size: .92rem;
+    }
+
+    .panel { overflow: hidden; }
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .panel-head h2 { margin: 0; font-size: 1.15rem; color: var(--navy); }
+    .panel-head p { margin: 3px 0 0; color: var(--muted); font-size: .9rem; }
+    .panel-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+
+    .leaderboard { padding: 8px 14px 14px; }
+    .tech {
+      margin-top: 9px;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      overflow: hidden;
+      background: white;
+    }
+
+    .tech-main {
+      display: grid;
+      grid-template-columns: 52px minmax(160px, 1fr) 130px 120px;
+      gap: 12px;
+      align-items: center;
+      padding: 14px 16px;
+    }
+
+    .rank {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      color: white;
+      background: var(--navy);
+      font-weight: 900;
+    }
+
+    .tech:first-child .rank {
+      color: var(--navy);
+      background: linear-gradient(145deg, #f7fbfd, var(--yellow));
+      border: 1px solid #8eb8cc;
+      box-shadow: inset 0 0 0 2px rgba(255,255,255,.55);
+    }
+    .tech-name { font-size: 1.05rem; font-weight: 900; color: var(--navy); }
+    .tech-sub { color: var(--muted); font-size: .83rem; }
+
+    .score-wrap { text-align: right; }
+    .score {
+      color: var(--navy);
+      font-size: 1.42rem;
+      font-weight: 950;
+      letter-spacing: -.03em;
+    }
+    .score-label { display: block; color: var(--muted); font-size: .72rem; font-weight: 800; text-transform: uppercase; }
+
+    .meter {
+      height: 8px;
+      overflow: hidden;
+      border-radius: 99px;
+      background: #e7edf0;
+    }
+    .meter span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #69b9dc, #0878a8);
+    }
+
+    .details { display: none; padding: 0 16px 16px; }
+    .tech.open .details { display: block; }
+    .metric-grid {
+      display: grid;
+      grid-template-columns: 1.5fr .75fr .75fr .7fr;
+      gap: 1px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: var(--line);
+    }
+
+    .metric-grid > div {
+      min-width: 0;
+      padding: 10px;
+      background: #fff;
+    }
+    .metric-grid .grid-head {
+      color: var(--muted);
+      background: #f2f6f7;
+      font-size: .72rem;
+      font-weight: 850;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .metric-input, .setting-input, .name-input {
+      width: 100%;
+      min-width: 0;
+      border: 1px solid #bccbd3;
+      border-radius: 8px;
+      padding: 8px 9px;
+      color: var(--navy);
+      background: var(--cream);
+      font-weight: 800;
+    }
+    .input-shell {
+      display: flex;
+      align-items: center;
+      min-width: 0;
+      overflow: hidden;
+      border: 1px solid #bccbd3;
+      border-radius: 8px;
+      color: var(--navy);
+      background: var(--cream);
+    }
+    .input-shell:focus-within {
+      border-color: #d79616;
+      box-shadow: 0 0 0 2px rgba(247, 185, 40, .18);
+    }
+    .input-shell .metric-input,
+    .input-shell .setting-input {
+      border: 0;
+      border-radius: 0;
+      outline: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+    .input-affix {
+      flex: 0 0 auto;
+      padding: 0 0 0 10px;
+      color: var(--muted);
+      font-weight: 900;
+    }
+    .input-affix.suffix { padding: 0 10px 0 0; }
+    .metric-score { font-weight: 900; color: var(--green); text-align: right; }
+    .tech-tools { display: flex; justify-content: flex-end; gap: 8px; margin-top: 11px; }
+
+    .settings { display: none; padding: 18px; }
+    .settings.visible { display: block; }
+    .settings-grid {
+      display: grid;
+      grid-template-columns: 1.6fr .7fr .7fr;
+      gap: 9px;
+      align-items: center;
+    }
+    .settings-grid .head { color: var(--muted); font-size: .72rem; font-weight: 850; text-transform: uppercase; }
+    .settings-grid + .settings-grid { margin-top: 9px; }
+    .weight-total { margin: 13px 0 0; color: var(--muted); font-size: .88rem; }
+
+    .empty { padding: 34px; text-align: center; color: var(--muted); }
+    .toast {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 5;
+      max-width: min(360px, calc(100% - 40px));
+      padding: 12px 15px;
+      border-radius: 12px;
+      color: white;
+      background: var(--navy);
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transform: translateY(14px);
+      pointer-events: none;
+      transition: .2s ease;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    .share-modal[hidden] { display: none; }
+    .share-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: rgba(3, 19, 31, .72);
+    }
+    .share-card {
+      width: min(560px, 100%);
+      padding: 22px;
+      border: 1px solid #a8c9d9;
+      border-radius: 18px;
+      background: white;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, .3);
+    }
+    .share-card h2 { margin: 0; color: var(--navy); }
+    .share-card p { margin: 7px 0 14px; color: var(--muted); }
+    .share-link {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid #9ebdcd;
+      border-radius: 9px;
+      color: var(--navy);
+      background: var(--cream);
+    }
+    .share-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 13px; }
+
+    @media (max-width: 760px) {
+      .app { width: min(100% - 18px, 1180px); padding-top: 9px; }
+      .hero { align-items: flex-start; flex-direction: column; padding: 21px; border-radius: 18px; }
+      .brand { align-items: flex-start; gap: 13px; }
+      .brand-logo { width: 78px; height: 78px; }
+      .hero-actions { justify-content: flex-start; }
+      .summary { grid-template-columns: 1fr; gap: 8px; }
+      .summary-card { display: flex; align-items: center; justify-content: space-between; padding: 13px 15px; }
+      .summary-card .value { margin: 0; font-size: 1.12rem; }
+      .panel-head { align-items: flex-start; flex-direction: column; }
+      .panel-actions { justify-content: flex-start; }
+      .tech-main { grid-template-columns: 42px minmax(0, 1fr) 88px; }
+      .tech-main .meter { display: none; }
+      .metric-grid { grid-template-columns: 1.4fr .75fr .75fr; }
+      .metric-grid .attain { display: none; }
+      .settings-grid { grid-template-columns: 1.4fr .8fr .8fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="hero">
+      <div class="brand">
+        <img class="brand-logo" src="assets/atlantic-north-electrical-logo.png" alt="Atlantic North Electrical Excellence">
+        <div>
+          <p class="eyebrow">Atlantic North · Right Tech. Right Call.</p>
+          <h1>Electrical Performance Batting Order</h1>
+          <p>Turn trailing performance into a clear, coachable lineup.</p>
+        </div>
+      </div>
+      <div class="hero-actions">
+        <button class="btn ghost" id="copyLink">Copy Team Link</button>
+        <button class="btn ghost" id="importTechs">Import Tech List</button>
+        <button class="btn primary" id="addTech">+ Add Technician</button>
+        <input id="techFile" type="file" accept=".xlsx,.xls,.csv" hidden>
+      </div>
+    </section>
+
+    <nav class="switcher" aria-label="Batting order">
+      <button type="button" data-team="service" aria-selected="true">Service Batting Order</button>
+      <button type="button" data-team="maintenance" aria-selected="false">Maintenance Batting Order</button>
+    </nav>
+
+    <section class="summary" id="summary"></section>
+    <div id="warning"></div>
+
+    <section class="panel">
+      <header class="panel-head">
+        <div>
+          <h2 id="panelTitle">Service Leaderboard</h2>
+          <p>Technicians automatically rank by weighted score.</p>
+        </div>
+        <div class="panel-actions">
+          <button class="btn soft small" id="toggleSettings">Targets &amp; Weights</button>
+          <button class="btn small" id="resetData">Reset Demo</button>
+        </div>
+      </header>
+      <div class="settings" id="settings"></div>
+      <div class="leaderboard" id="leaderboard"></div>
+    </section>
+  </main>
+  <div class="share-modal" id="shareModal" hidden>
+    <section class="share-card" role="dialog" aria-modal="true" aria-labelledby="shareTitle">
+      <h2 id="shareTitle">Team Link Ready</h2>
+      <p>Copy this link and send it to the team. It carries the complete market setup.</p>
+      <input class="share-link" id="shareLinkField" readonly aria-label="Team Link">
+      <div class="share-actions">
+        <button class="btn small" id="closeShare">Close</button>
+        <button class="btn primary small" id="copyShare">Copy Link</button>
+      </div>
+    </section>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+  <script>
+    const STORAGE_KEY = "electrical-performance-batting-order-v1";
+    const metricNames = [
+      "Membership Conversion",
+      "Conversion Rate",
+      "Average Sale",
+      "5-Star Google Reviews",
+      "OPO (Options per Opportunity)"
+    ];
+
+    const defaults = {
+      activeTeam: "service",
+      windowDays: 14,
+      teams: {
+        service: {
+          label: "Service",
+          metrics: [
+            { name: metricNames[0], target: 0.25, weight: 0.20, type: "percent" },
+            { name: metricNames[1], target: 0.70, weight: 0.30, type: "percent" },
+            { name: metricNames[2], target: 2100, weight: 0.10, type: "currency" },
+            { name: metricNames[3], target: 1, weight: 0.20, type: "number" },
+            { name: metricNames[4], target: 3, weight: 0.20, type: "decimal" }
+          ],
+          technicians: [
+            ["Billy", 0, .58, 2499, 0, 2.0],
+            ["TJ", .25, .51, 1932, 1, 1.63],
+            ["Nick", .05, .71, 715, 0, 1.64],
+            ["Mike", .05, .50, 1389, 0, 2.5],
+            ["Jesse", .05, .67, 2229, 0, 2.07],
+            ["Nate", .05, .67, 3623, 1, 1.5],
+            ["Rich", .15, .38, 999, 2, 2.12],
+            ["Brock", 0, .57, 879, 0, 2.05],
+            ["Cody", .05, .63, 764, 0, 1.8]
+          ].map(([name, ...actuals]) => ({ id: crypto.randomUUID(), name, actuals }))
+        },
+        maintenance: {
+          label: "Maintenance",
+          metrics: [
+            { name: metricNames[0], target: 0.35, weight: 0.30, type: "percent" },
+            { name: metricNames[1], target: 0.25, weight: 0.20, type: "percent" },
+            { name: metricNames[2], target: 300, weight: 0.20, type: "currency" },
+            { name: metricNames[3], target: 1, weight: 0.20, type: "number" },
+            { name: metricNames[4], target: 3, weight: 0.10, type: "decimal" }
+          ],
+          technicians: [
+            ["Brian Galguera", 0, 0, 650, 2, 2.0],
+            ["Gerry Norris", 0, 0, 650, 2, 2.0],
+            ["James Hutchins", 0, 0, 650, 2, 2.0],
+            ["Matthew Weaver", 0, 0, 650, 2, 2.0],
+            ["Michael Hutchins", 0, 0, 650, 2, 2.0]
+          ].map(([name, ...actuals]) => ({ id: crypto.randomUUID(), name, actuals }))
+        }
+      }
+    };
+
+    const clone = value => JSON.parse(JSON.stringify(value));
+    let state = loadState();
+    let settingsOpen = false;
+    let openTech = null;
+
+    function loadState() {
+      const fromLink = location.hash.startsWith("#team=") ? location.hash.slice(6) : "";
+      if (fromLink) {
+        try {
+          const parsed = JSON.parse(decodeURIComponent(escape(atob(fromLink))));
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
+          history.replaceState(null, "", location.pathname + location.search);
+          setTimeout(() => notify("Team setup installed and saved in this browser."), 200);
+          return normalizeState(parsed);
+        } catch (_) {}
+      }
+      try {
+        return normalizeState(JSON.parse(localStorage.getItem(STORAGE_KEY)) || clone(defaults));
+      } catch (_) {
+        return clone(defaults);
+      }
+    }
+
+    function normalizeState(data) {
+      if (!data || !data.teams) return clone(defaults);
+      if (!Number(data.windowDays)) {
+        const oldDays = Number(String(data.window || "").match(/\d+/)?.[0]);
+        data.windowDays = oldDays || 14;
+      }
+      data.windowDays = Math.max(1, Math.round(Number(data.windowDays) || 14));
+      const maintenanceMetrics = data.teams?.maintenance?.metrics || [];
+      const maintenanceTotal = maintenanceMetrics.reduce((sum, metric) => sum + (Number(metric.weight) || 0), 0);
+      if (
+        maintenanceMetrics.length === 5 &&
+        Math.abs(maintenanceTotal - 1.1) < .0001 &&
+        Math.abs((Number(maintenanceMetrics[4].weight) || 0) - .2) < .0001
+      ) {
+        maintenanceMetrics[4].weight = .1;
+      }
+      return data;
+    }
+
+    function save() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function team() { return state.teams[state.activeTeam]; }
+
+    function scoreTech(tech) {
+      const metrics = team().metrics;
+      const weightTotal = metrics.reduce((sum, metric) => sum + Math.max(0, Number(metric.weight) || 0), 0);
+      if (!weightTotal) return { score: 0, detail: metrics.map(() => ({ attainment: 0, points: 0 })) };
+      const detail = metrics.map((metric, index) => {
+        const actual = Math.max(0, Number(tech.actuals[index]) || 0);
+        const target = Math.max(0, Number(metric.target) || 0);
+        const attainment = target ? Math.min(1, actual / target) : 0;
+        const points = attainment * Math.max(0, Number(metric.weight) || 0) / weightTotal;
+        return { attainment, points };
+      });
+      return { score: detail.reduce((sum, item) => sum + item.points, 0), detail };
+    }
+
+    function percent(value) { return `${Math.round((Number(value) || 0) * 100)}%`; }
+    function formatMetric(value, type) {
+      const n = Number(value) || 0;
+      if (type === "percent") return percent(n);
+      if (type === "currency") return n.toLocaleString(undefined, { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+      return n.toLocaleString(undefined, { maximumFractionDigits: 1 });
+    }
+
+    function editableValue(value, type, forcePercent = false) {
+      const n = Number(value) || 0;
+      if (forcePercent || type === "percent") {
+        return Number((n * 100).toFixed(2)).toLocaleString(undefined, { maximumFractionDigits: 2 });
+      }
+      if (type === "currency") {
+        return Math.round(n).toLocaleString();
+      }
+      return Number(n.toFixed(2)).toLocaleString(undefined, { maximumFractionDigits: 2 });
+    }
+
+    function inputValue(value, type, forcePercent = false) {
+      const number = Number(String(value ?? "").replace(/[$,%\s]/g, "").replaceAll(",", "")) || 0;
+      return Math.max(0, forcePercent || type === "percent" ? number / 100 : number);
+    }
+
+    function inputShell({ value, type, attributes, forcePercent = false }) {
+      const prefix = type === "currency" ? '<span class="input-affix">$</span>' : "";
+      const suffix = forcePercent || type === "percent" ? '<span class="input-affix suffix">%</span>' : "";
+      return `<div class="input-shell">${prefix}<input ${attributes} type="text" inputmode="decimal" value="${escapeAttr(editableValue(value, type, forcePercent))}">${suffix}</div>`;
+    }
+
+    function sortedTechs() {
+      return [...team().technicians].map(tech => ({ ...tech, result: scoreTech(tech) }))
+        .sort((a, b) => b.result.score - a.result.score || a.name.localeCompare(b.name));
+    }
+
+    function render() {
+      document.querySelectorAll("[data-team]").forEach(button => {
+        button.setAttribute("aria-selected", button.dataset.team === state.activeTeam ? "true" : "false");
+      });
+      document.getElementById("panelTitle").textContent = `${team().label} Leaderboard`;
+      renderSummary();
+      renderWarning();
+      renderSettings();
+      renderLeaderboard();
+    }
+
+    function trackingWindow() {
+      return `Trailing ${state.windowDays} ${state.windowDays === 1 ? "Day" : "Days"}`;
+    }
+
+    function renderSummary() {
+      const techs = sortedTechs();
+      const avg = techs.length ? techs.reduce((sum, tech) => sum + tech.result.score, 0) / techs.length : 0;
+      document.getElementById("summary").innerHTML = `
+        <article class="summary-card"><span class="label">Top Performer</span><span class="value">${escapeHtml(techs[0]?.name || "—")}</span></article>
+        <article class="summary-card"><span class="label">Team Average</span><span class="value">${percent(avg)}</span></article>
+        <article class="summary-card"><span class="label">Performance Window</span><span class="value">${trackingWindow()}</span></article>`;
+    }
+
+    function renderWarning() {
+      const total = team().metrics.reduce((sum, metric) => sum + (Number(metric.weight) || 0), 0);
+      document.getElementById("warning").innerHTML = Math.abs(total - 1) > .0001
+        ? `<p class="warning"><strong>Weights total ${percent(total)}.</strong> Scores are automatically normalized to a 100-point scale, so the ranking remains fair. Adjust the weights under Targets &amp; Weights when ready.</p>`
+        : "";
+    }
+
+    function renderSettings() {
+      const rows = team().metrics.map((metric, index) => `
+        <div class="settings-grid">
+          <input class="setting-input" data-setting="name" data-index="${index}" value="${escapeAttr(metric.name)}" aria-label="Metric ${index + 1} name">
+          ${inputShell({
+            value: metric.target,
+            type: metric.type,
+            attributes: `class="setting-input" data-setting="target" data-index="${index}" aria-label="${escapeAttr(metric.name)} target"`
+          })}
+          ${inputShell({
+            value: metric.weight,
+            type: "number",
+            forcePercent: true,
+            attributes: `class="setting-input" data-setting="weight" data-index="${index}" aria-label="${escapeAttr(metric.name)} weight"`
+          })}
+        </div>`).join("");
+      const total = team().metrics.reduce((sum, metric) => sum + (Number(metric.weight) || 0), 0);
+      const settings = document.getElementById("settings");
+      settings.className = `settings${settingsOpen ? " visible" : ""}`;
+      settings.innerHTML = `
+        <div class="settings-grid">
+          <strong>Trailing performance days</strong>
+          <input class="setting-input" data-setting="windowDays" type="number" min="1" max="365" step="1" value="${state.windowDays}" aria-label="Trailing performance days">
+          <span></span>
+        </div>
+        <hr style="border:0;border-top:1px solid var(--line);margin:16px 0">
+        <div class="settings-grid">
+          <span class="head">Metric</span><span class="head">Target</span><span class="head">Weight</span>
+        </div>
+        ${rows}
+        <p class="weight-total">Current weight total: <strong>${percent(total)}</strong>. Ranking scores normalize automatically.</p>`;
+    }
+
+    function renderLeaderboard() {
+      const techs = sortedTechs();
+      document.getElementById("leaderboard").innerHTML = techs.length ? techs.map((tech, rank) => {
+        const isOpen = openTech === tech.id;
+        const metricRows = team().metrics.map((metric, index) => `
+          <div>${escapeHtml(metric.name)}</div>
+          <div>${inputShell({
+            value: tech.actuals[index] ?? 0,
+            type: metric.type,
+            attributes: `class="metric-input" data-tech="${tech.id}" data-metric="${index}" aria-label="${escapeAttr(tech.name)} ${escapeAttr(metric.name)} actual"`
+          })}</div>
+          <div class="attain">${percent(tech.result.detail[index].attainment)}</div>
+          <div class="metric-score">${percent(tech.result.detail[index].points)}</div>`).join("");
+        return `
+          <article class="tech${isOpen ? " open" : ""}" data-card="${tech.id}">
+            <div class="tech-main">
+              <div class="rank">${rank + 1}</div>
+              <div>
+                <div class="tech-name">${escapeHtml(tech.name)}</div>
+                <div class="tech-sub">${team().label} technician · ${percent(tech.result.score)} to perfect score</div>
+              </div>
+              <div class="meter" aria-hidden="true"><span style="width:${Math.round(tech.result.score * 100)}%"></span></div>
+              <div class="score-wrap">
+                <span class="score">${percent(tech.result.score)}</span>
+                <span class="score-label">Weighted Score</span>
+              </div>
+            </div>
+            <div class="details">
+              <div class="metric-grid">
+                <div class="grid-head">Metric</div><div class="grid-head">Actual</div><div class="grid-head attain">To Target</div><div class="grid-head">Points</div>
+                ${metricRows}
+              </div>
+              <div class="tech-tools">
+                <button class="btn small" data-rename="${tech.id}">Rename</button>
+                <button class="btn danger small" data-remove="${tech.id}">Remove</button>
+              </div>
+            </div>
+          </article>`;
+      }).join("") : `<div class="empty">No technicians yet. Add the first one to begin this batting order.</div>`;
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[character]));
+    }
+    function escapeAttr(value) { return escapeHtml(value); }
+
+    function notify(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(notify.timer);
+      notify.timer = setTimeout(() => toast.classList.remove("show"), 2400);
+    }
+
+    document.querySelector(".switcher").addEventListener("click", event => {
+      const button = event.target.closest("[data-team]");
+      if (!button) return;
+      state.activeTeam = button.dataset.team;
+      openTech = null;
+      settingsOpen = false;
+      save();
+      render();
+    });
+
+    document.getElementById("leaderboard").addEventListener("click", event => {
+      const remove = event.target.closest("[data-remove]");
+      if (remove) {
+        const tech = team().technicians.find(item => item.id === remove.dataset.remove);
+        if (tech && confirm(`Remove ${tech.name} from the ${team().label} batting order?`)) {
+          team().technicians = team().technicians.filter(item => item.id !== tech.id);
+          save(); render();
+        }
+        return;
+      }
+      const rename = event.target.closest("[data-rename]");
+      if (rename) {
+        const tech = team().technicians.find(item => item.id === rename.dataset.rename);
+        const name = prompt("Technician name", tech?.name || "");
+        if (tech && name?.trim()) {
+          tech.name = name.trim();
+          save(); render();
+        }
+        return;
+      }
+      if (event.target.closest("input, button")) return;
+      const card = event.target.closest("[data-card]");
+      if (card) {
+        openTech = openTech === card.dataset.card ? null : card.dataset.card;
+        renderLeaderboard();
+      }
+    });
+
+    document.getElementById("leaderboard").addEventListener("change", event => {
+      const input = event.target.closest("[data-tech][data-metric]");
+      if (!input) return;
+      const tech = team().technicians.find(item => item.id === input.dataset.tech);
+      if (tech) {
+        const metricIndex = Number(input.dataset.metric);
+        tech.actuals[metricIndex] = inputValue(input.value, team().metrics[metricIndex].type);
+        save(); render();
+      }
+    });
+
+    document.getElementById("leaderboard").addEventListener("input", event => {
+      const input = event.target.closest("[data-tech][data-metric]");
+      if (!input) return;
+      const tech = team().technicians.find(item => item.id === input.dataset.tech);
+      if (tech) {
+        const metricIndex = Number(input.dataset.metric);
+        tech.actuals[metricIndex] = inputValue(input.value, team().metrics[metricIndex].type);
+        save();
+      }
+    });
+
+    document.getElementById("settings").addEventListener("change", event => {
+      const input = event.target.closest("[data-setting]");
+      if (!input) return;
+      if (input.dataset.setting === "windowDays") {
+        state.windowDays = Math.max(1, Math.min(365, Math.round(Number(input.value) || 14)));
+        save(); render();
+        return;
+      }
+      const metric = team().metrics[Number(input.dataset.index)];
+      if (input.dataset.setting === "name") metric.name = input.value.trim() || `Metric ${Number(input.dataset.index) + 1}`;
+      else if (input.dataset.setting === "weight") metric.weight = inputValue(input.value, "number", true);
+      else metric.target = inputValue(input.value, metric.type);
+      save(); render();
+    });
+
+    document.getElementById("settings").addEventListener("input", event => {
+      const input = event.target.closest("[data-setting]");
+      if (!input) return;
+      if (input.dataset.setting === "windowDays") {
+        state.windowDays = Math.max(1, Math.min(365, Math.round(Number(input.value) || 14)));
+        save();
+        renderSummary();
+        return;
+      }
+      if (input.dataset.setting === "name") return;
+      const metric = team().metrics[Number(input.dataset.index)];
+      if (input.dataset.setting === "weight") metric.weight = inputValue(input.value, "number", true);
+      else metric.target = inputValue(input.value, metric.type);
+      save();
+      renderSummary();
+      renderWarning();
+    });
+
+    document.getElementById("toggleSettings").addEventListener("click", () => {
+      settingsOpen = !settingsOpen;
+      renderSettings();
+    });
+
+    document.getElementById("addTech").addEventListener("click", () => {
+      const name = prompt(`New ${team().label} technician name`);
+      if (!name?.trim()) return;
+      const tech = { id: crypto.randomUUID(), name: name.trim(), actuals: team().metrics.map(() => 0) };
+      team().technicians.push(tech);
+      openTech = tech.id;
+      save(); render();
+    });
+
+    function normalizedHeader(value) {
+      return String(value ?? "").trim().toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+    }
+
+    function numericValue(value, type) {
+      if (typeof value === "number") return Math.max(0, value);
+      const text = String(value ?? "").trim();
+      if (!text) return 0;
+      const number = Number(text.replace(/[$,\s]/g, "").replace("%", ""));
+      if (!Number.isFinite(number)) return 0;
+      return Math.max(0, type === "percent" && text.includes("%") ? number / 100 : number);
+    }
+
+    function destinationFrom(value, sheetName) {
+      const label = `${value || ""} ${sheetName || ""}`.toLowerCase();
+      if (label.includes("maint")) return "maintenance";
+      if (label.includes("service")) return "service";
+      return state.activeTeam;
+    }
+
+    function importRows(rows, sheetName, counts) {
+      const populated = rows.filter(row => Array.isArray(row) && row.some(cell => String(cell ?? "").trim()));
+      if (!populated.length) return;
+      const first = populated[0].map(normalizedHeader);
+      const nameAliases = ["technician", "technician name", "tech", "tech name", "employee", "employee name", "name"];
+      const roleAliases = ["team", "role", "department", "division", "type"];
+      const nameIndex = first.findIndex(header => nameAliases.includes(header));
+      const roleIndex = first.findIndex(header => roleAliases.includes(header));
+      const metricIndexes = metricNames.map(name => {
+        const wanted = normalizedHeader(name);
+        return first.findIndex(header =>
+          header === wanted ||
+          (wanted.includes("average sale") && header.includes("avg sale")) ||
+          (wanted.includes("5 star") && (header.includes("google") || header.includes("review"))) ||
+          (wanted.includes("opo") && header.includes("opo"))
+        );
+      });
+      const hasHeader = nameIndex >= 0 || roleIndex >= 0 || metricIndexes.some(index => index >= 0);
+      const chosenNameIndex = nameIndex >= 0 ? nameIndex : Math.max(0, first.findIndex(Boolean));
+      const dataRows = hasHeader ? populated.slice(1) : populated;
+
+      dataRows.forEach(row => {
+        const name = String(row[chosenNameIndex] ?? "").trim();
+        const normalizedName = normalizedHeader(name);
+        if (
+          !name ||
+          normalizedName === "insert tech name here" ||
+          normalizedName === "weighted scorecard" ||
+          normalizedName === "example technician calculation" ||
+          normalizedName === "compjter" ||
+          normalizedName === normalizedHeader(sheetName)
+        ) return;
+        const destination = destinationFrom(roleIndex >= 0 ? row[roleIndex] : "", sheetName);
+        const targetTeam = state.teams[destination];
+        const existing = targetTeam.technicians.find(tech => tech.name.toLowerCase() === name.toLowerCase());
+        if (existing) {
+          counts.skipped += 1;
+          return;
+        }
+        const actuals = targetTeam.metrics.map((metric, index) => {
+          const sourceIndex = metricIndexes[index];
+          return sourceIndex >= 0 ? numericValue(row[sourceIndex], metric.type) : 0;
+        });
+        targetTeam.technicians.push({ id: crypto.randomUUID(), name, actuals });
+        counts[destination] += 1;
+      });
+    }
+
+    async function importTechFile(file) {
+      const extension = file.name.split(".").pop().toLowerCase();
+      const counts = { service: 0, maintenance: 0, skipped: 0 };
+      if (extension === "csv") {
+        const text = await file.text();
+        const rows = text.split(/\r?\n/).map(line => {
+          const cells = [];
+          let value = "", quoted = false;
+          for (let index = 0; index < line.length; index += 1) {
+            const character = line[index];
+            if (character === '"') {
+              if (quoted && line[index + 1] === '"') { value += '"'; index += 1; }
+              else quoted = !quoted;
+            } else if (character === "," && !quoted) {
+              cells.push(value); value = "";
+            } else value += character;
+          }
+          cells.push(value);
+          return cells;
+        });
+        importRows(rows, state.activeTeam, counts);
+      } else {
+        if (!window.XLSX) throw new Error("The Excel reader could not load. Check the internet connection and try again.");
+        const workbook = XLSX.read(await file.arrayBuffer(), { type: "array" });
+        workbook.SheetNames.forEach(sheetName => {
+          const rows = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1, defval: "", raw: true });
+          importRows(rows, sheetName, counts);
+        });
+      }
+      if (!counts.service && !counts.maintenance) throw new Error("No new technician names were found in that file.");
+      save(); render();
+      notify(`Imported ${counts.service + counts.maintenance} technicians.`);
+    }
+
+    document.getElementById("importTechs").addEventListener("click", () => {
+      document.getElementById("techFile").click();
+    });
+
+    document.getElementById("techFile").addEventListener("change", async event => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      try {
+        await importTechFile(file);
+      } catch (error) {
+        alert(error.message || "The technician list could not be imported.");
+      } finally {
+        event.target.value = "";
+      }
+    });
+
+    document.getElementById("resetData").addEventListener("click", () => {
+      if (!confirm(`Reset the ${team().label} batting order to the original spreadsheet example?`)) return;
+      const active = state.activeTeam;
+      state.teams[active] = clone(defaults.teams[active]);
+      state.activeTeam = active;
+      openTech = null;
+      save(); render();
+      notify(`${team().label} demo reset.`);
+    });
+
+    function fallbackCopy(text) {
+      const field = document.createElement("textarea");
+      field.value = text;
+      field.setAttribute("readonly", "");
+      field.style.position = "fixed";
+      field.style.opacity = "0";
+      document.body.appendChild(field);
+      field.select();
+      const copied = document.execCommand("copy");
+      field.remove();
+      return copied;
+    }
+
+    document.getElementById("copyLink").addEventListener("click", () => {
+      const payload = btoa(unescape(encodeURIComponent(JSON.stringify(state))));
+      const link = `${location.href.split("#")[0]}#team=${payload}`;
+      const field = document.getElementById("shareLinkField");
+      field.value = link;
+      document.getElementById("shareModal").hidden = false;
+      field.focus();
+      field.select();
+      if (navigator.clipboard?.writeText) navigator.clipboard.writeText(link).catch(() => {});
+    });
+
+    document.getElementById("closeShare").addEventListener("click", () => {
+      document.getElementById("shareModal").hidden = true;
+    });
+
+    document.getElementById("copyShare").addEventListener("click", () => {
+      const field = document.getElementById("shareLinkField");
+      field.focus();
+      field.select();
+      try {
+        if (fallbackCopy(field.value)) {
+          notify("Team Link copied.");
+          return;
+        }
+      } catch (_) {}
+      if (navigator.clipboard?.writeText) {
+        navigator.clipboard.writeText(field.value)
+          .then(() => notify("Team Link copied."))
+          .catch(() => prompt("Copy this Team Link", field.value));
+      } else {
+        prompt("Copy this Team Link", field.value);
+      }
+    });
+
+    const shortcutIcon = document.querySelector('link[rel="apple-touch-icon"]')?.href;
+    if (shortcutIcon) {
+      const manifest = {
+        name: "Atlantic North Electrical Batting Order",
+        short_name: "Batting Order",
+        start_url: "./",
+        display: "standalone",
+        background_color: "#e9e1db",
+        theme_color: "#151515",
+        icons: [
+          { src: shortcutIcon, sizes: "180x180", type: "image/png", purpose: "any" },
+          { src: shortcutIcon, sizes: "180x180", type: "image/png", purpose: "maskable" }
+        ]
+      };
+      document.getElementById("appManifest").href = URL.createObjectURL(
+        new Blob([JSON.stringify(manifest)], { type: "application/manifest+json" })
+      );
+    }
+
+    render();
+  </script>
+</body>
+</html>
